@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spruce Canvas Receiver</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: #000;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #fff;
+    }
+
+    /* Full-screen YouTube player container */
+    #player-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* The YouTube iframe fills the entire screen */
+    #yt-player {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Loading / idle overlay */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: radial-gradient(ellipse at center, #1c1f2e 0%, #0a0c14 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      transition: opacity .4s;
+    }
+
+    #overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #overlay-logo {
+      font-size: 5rem;
+      line-height: 1;
+    }
+
+    #overlay-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -.5px;
+    }
+
+    #overlay-sub {
+      font-size: 1.1rem;
+      color: #8a8fa8;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid rgba(255,255,255,.15);
+      border-top-color: #4f8ef7;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Now-playing overlay (bottom bar on TV) */
+    #np-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 20;
+      background: linear-gradient(transparent, rgba(0,0,0,.85));
+      padding: 40px 48px 36px;
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .4s, transform .4s;
+      pointer-events: none;
+    }
+
+    #np-bar.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #np-thumb {
+      width: 112px;
+      height: 68px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+      background: #1c1f2e;
+    }
+
+    #np-info { flex: 1; min-width: 0; }
+
+    #np-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #np-channel {
+      margin-top: 6px;
+      font-size: 1rem;
+      color: rgba(255,255,255,.6);
+    }
+
+    /* Error state */
+    #error-msg {
+      color: #e05252;
+      font-size: 1.1rem;
+      text-align: center;
+      max-width: 480px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Idle / loading overlay -->
+  <div id="overlay">
+    <div id="overlay-logo">🌲</div>
+    <div id="overlay-title">Spruce Canvas</div>
+    <div id="overlay-sub">Ready to cast…</div>
+    <div id="overlay-spinner" class="spinner" style="display:none"></div>
+    <div id="error-msg" style="display:none"></div>
+  </div>
+
+  <!-- YouTube iframe player (filled from JS) -->
+  <div id="player-container">
+    <iframe
+      id="yt-player"
+      allow="autoplay; encrypted-media; fullscreen"
+      allowfullscreen
+      referrerpolicy="no-referrer"
+    ></iframe>
+  </div>
+
+  <!-- Now-playing info bar -->
+  <div id="np-bar">
+    <img id="np-thumb" alt="" />
+    <div id="np-info">
+      <div id="np-title"></div>
+      <div id="np-channel"></div>
+    </div>
+  </div>
+
+  <!-- Cast CAF Receiver SDK -->
+  <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <script src="js/receiver.js"></script>
+</body>
+</html>
