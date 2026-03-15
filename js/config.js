@@ -21,7 +21,7 @@ const Config = (() => {
   // Replace with your own ID after registering at:
   // https://cast.google.com/publish/#/overview
   // Until then, use the default media receiver for testing.
-  const CAST_APP_ID = 'CC1AD845'; // Default Media Receiver (testing only)
+  const CAST_APP_ID = '746C5307';
 
   // YouTube Data API base URL
   const YT_API_BASE = 'https://www.googleapis.com/youtube/v3';
