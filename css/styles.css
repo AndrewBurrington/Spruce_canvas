@@ -89,8 +89,17 @@ google-cast-launcher {
 .icon-btn:hover { color: var(--text); background: var(--surface2); }
 .icon-btn svg { width: 22px; height: 22px; }
 
-#parent-lock-btn { color: var(--text-muted); }
-#parent-lock-btn:hover { color: var(--accent); }
+#parent-lock-btn {
+  background: var(--surface2);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: .85rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  gap: 6px;
+}
+#parent-lock-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* ── Show Grid ───────────────────────────────────────────────── */
 #show-grid-view {
