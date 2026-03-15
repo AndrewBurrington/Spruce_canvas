@@ -39,6 +39,10 @@
   const addShowName    = $('add-show-name');
   const addShowBtn     = $('add-show-btn');
   const addShowStatus  = $('add-show-status');
+  const starterList      = $('starter-list');
+  const starterSelectAll = $('starter-select-all');
+  const starterAddBtn    = $('starter-add-btn');
+  const starterStatus    = $('starter-status');
   const settingsShowList = $('settings-show-list');
   const settingsEmpty  = $('settings-empty');
   const newPinInput    = $('new-pin-input');
@@ -338,6 +342,7 @@
       const key = Config.getApiKey();
       apiKeyInput.value = key ? '••••••••••••••••' : '';
       apiKeyInput.dataset.saved = key || '';
+      renderStarterList();
       renderSettingsShowList();
       requestAnimationFrame(() => {
         settingsPanel.classList.remove('hidden');
@@ -467,6 +472,76 @@
     Config.setPin(pin);
     newPinInput.value = '';
     setStatus(pinChangeStatus, 'PIN updated!');
+  });
+
+  // ── Starter Pack ──────────────────────────────────────────────
+  const STARTER_SHOWS = [
+    { name: 'Ms. Rachel – Songs for Littles', handle: 'SongsforLittles' },
+    { name: 'Cocomelon',                      handle: 'Cocomelon' },
+    { name: 'Super Simple Songs',             handle: 'SuperSimpleSongs' },
+    { name: 'Blippi',                         handle: 'Blippi' },
+    { name: 'Sesame Street',                  handle: 'SesameStreet' },
+    { name: 'Pinkfong (Baby Shark)',          handle: 'Pinkfong' },
+    { name: 'Numberblocks',                   handle: 'Numberblocks' },
+    { name: 'Alphablocks',                    handle: 'Alphablocks' },
+    { name: 'Little Baby Bum',               handle: 'LittleBabyBum' },
+    { name: 'Hey Bear Sensory',              handle: 'HeyBearSensory' },
+    { name: 'Cosmic Kids Yoga',              handle: 'CosmicKidsYoga' },
+    { name: 'The Learning Station',          handle: 'TheLearningStation' },
+    { name: 'Bounce Patrol Kids',            handle: 'BouncePatrolKids' },
+    { name: 'Dave and Ava',                  handle: 'DaveandAva' },
+    { name: 'StoryBots',                     handle: 'StoryBots' },
+  ];
+
+  function renderStarterList() {
+    const existing = new Set(Config.getShows().map(s => s.id));
+    starterList.innerHTML = '';
+    STARTER_SHOWS.forEach((show, i) => {
+      const li = document.createElement('li');
+      li.className = 'starter-item';
+      li.innerHTML = `
+        <label>
+          <input type="checkbox" class="starter-cb" data-i="${i}" />
+          <span>${escHtml(show.name)}</span>
+        </label>`;
+      starterList.appendChild(li);
+    });
+  }
+
+  starterSelectAll.addEventListener('change', () => {
+    starterList.querySelectorAll('.starter-cb').forEach(cb => cb.checked = starterSelectAll.checked);
+  });
+
+  starterAddBtn.addEventListener('click', async () => {
+    const selected = [...starterList.querySelectorAll('.starter-cb:checked')]
+      .map(cb => STARTER_SHOWS[+cb.dataset.i]);
+    if (!selected.length) { setStatus(starterStatus, 'Nothing selected.', true); return; }
+
+    starterAddBtn.disabled = true;
+    let added = 0, failed = [];
+
+    for (const show of selected) {
+      setStatus(starterStatus, `Adding ${show.name}…`);
+      try {
+        const channelId = await Config.resolveHandle(show.handle);
+        const info = await Config.fetchChannelInfo(channelId);
+        const ok = Config.addShow({ id: channelId, type: 'channel', name: show.name, thumb: info.thumb });
+        if (ok) added++;
+      } catch {
+        failed.push(show.name);
+      }
+    }
+
+    renderSettingsShowList();
+    renderShowGrid();
+    renderStarterList();
+    starterSelectAll.checked = false;
+
+    const msg = added
+      ? `Added ${added} show${added > 1 ? 's' : ''}${failed.length ? `. Couldn't find: ${failed.join(', ')}` : '.'}`
+      : `Couldn't add any shows. Check your API key.`;
+    setStatus(starterStatus, msg, failed.length === selected.length);
+    starterAddBtn.disabled = false;
   });
 
   // ── XSS-safe escaping ─────────────────────────────────────────

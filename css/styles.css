@@ -510,6 +510,50 @@ input::placeholder { color: var(--text-muted); }
 
 .btn-full { width: 100%; padding: 14px; font-size: 1rem; margin-top: 8px; }
 
+/* ── Starter Pack ────────────────────────────────────────────── */
+.starter-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.starter-item label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .12s;
+}
+.starter-item label:hover { background: var(--surface2); }
+.starter-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.starter-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.starter-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.starter-select-all input { width: 16px; height: 16px; accent-color: var(--accent); }
+
 /* Managed shows list */
 .show-manage-list {
   list-style: none;
