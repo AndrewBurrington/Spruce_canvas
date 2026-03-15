@@ -333,17 +333,16 @@
 
   // ── Settings Panel ────────────────────────────────────────────
   function openSettings() {
-    // Populate current API key (masked)
-    const key = Config.getApiKey();
-    apiKeyInput.value = key ? '••••••••••••••••' : '';
-    apiKeyInput.dataset.saved = key;
-    apiKeyInput.addEventListener('focus', function onFocus() {
-      if (this.value.startsWith('•')) this.value = '';
-      this.removeEventListener('focus', onFocus);
-    }, { once: true });
-
-    renderSettingsShowList();
-    settingsPanel.classList.remove('hidden');
+    try {
+      const key = Config.getApiKey();
+      apiKeyInput.value = key ? '••••••••••••••••' : '';
+      apiKeyInput.dataset.saved = key || '';
+      renderSettingsShowList();
+      settingsPanel.classList.remove('hidden');
+      showToast('Settings open');
+    } catch (err) {
+      showToast('Error opening settings: ' + (err.message || err));
+    }
   }
 
   settingsClose.addEventListener('click', () => {
