@@ -334,15 +334,20 @@
 
   // ── Settings Panel ────────────────────────────────────────────
   function openSettings() {
+    alert('openSettings called');
     try {
+      alert('step 1: getApiKey');
       const key = Config.getApiKey();
+      alert('step 2: set input. key=' + key);
       apiKeyInput.value = key ? '••••••••••••••••' : '';
       apiKeyInput.dataset.saved = key || '';
+      alert('step 3: renderSettingsShowList');
       renderSettingsShowList();
+      alert('step 4: remove hidden');
       settingsPanel.classList.remove('hidden');
-      showToast('Settings open');
+      alert('step 5: done');
     } catch (err) {
-      showToast('Error opening settings: ' + (err.message || err));
+      alert('ERROR: ' + (err.message || err));
     }
   }
 
