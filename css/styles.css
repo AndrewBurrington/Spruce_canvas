@@ -400,6 +400,20 @@ google-cast-launcher {
 }
 .pin-cancel:hover { background: var(--danger); color: #fff; }
 
+.pin-reset-link {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: .8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-align: center;
+}
+.pin-reset-link:hover { color: var(--danger); }
+
 /* ── Settings Panel ──────────────────────────────────────────── */
 #settings-panel {
   display: flex;

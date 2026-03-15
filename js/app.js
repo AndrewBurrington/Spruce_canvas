@@ -29,6 +29,7 @@
   const pinPad         = $('pin-pad');
   const pinClearBtn    = $('pin-clear-btn');
   const pinCancelBtn   = $('pin-cancel-btn');
+  const pinResetBtn    = $('pin-reset-btn');
   const settingsPanel  = $('settings-panel');
   const settingsClose  = $('settings-close-btn');
   const apiKeyInput    = $('api-key-input');
@@ -307,13 +308,22 @@
       if (pinBuffer.length === 4) {
         if (Config.checkPin(pinBuffer)) {
           closePinModal();
+          showToast('PIN accepted — opening settings…');
           if (pinCallback) pinCallback(true);
         } else {
           pinError.classList.remove('hidden');
+          showToast('Wrong PIN. Try again.');
           pinBuffer = '';
           updatePinDots();
         }
       }
+    }
+  });
+
+  pinResetBtn.addEventListener('click', () => {
+    if (confirm('This will erase your PIN, shows, and API key and restart setup. Continue?')) {
+      localStorage.clear();
+      location.reload();
     }
   });
 
