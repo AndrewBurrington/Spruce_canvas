@@ -307,9 +307,10 @@
 
       if (pinBuffer.length === 4) {
         if (Config.checkPin(pinBuffer)) {
+          const cb = pinCallback;
           closePinModal();
           showToast('PIN accepted — opening settings…');
-          if (pinCallback) pinCallback(true);
+          if (cb) cb(true);
         } else {
           pinError.classList.remove('hidden');
           showToast('Wrong PIN. Try again.');
