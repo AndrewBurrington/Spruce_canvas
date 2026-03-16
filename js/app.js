@@ -553,7 +553,36 @@
       .replace(/"/g, '&quot;');
   }
 
+  // ── URL-param setup (for TV / remote-entry ease) ─────────────
+  // Navigate to ?apikey=YOUR_KEY to save the API key without typing it.
+  // Optionally add &pin=1234 to also complete first-run setup automatically.
+  function handleUrlParams() {
+    const params = new URLSearchParams(location.search);
+    const apiKey = params.get('apikey');
+    const pin    = params.get('pin');
+
+    if (!apiKey && !pin) return;
+
+    if (apiKey) {
+      Config.setApiKey(apiKey);
+    }
+
+    if (pin && /^\d{4}$/.test(pin) && !Config.isSetupDone()) {
+      Config.setPin(pin);
+      Config.markSetupDone();
+    }
+
+    // Strip the sensitive params from the URL immediately
+    params.delete('apikey');
+    params.delete('pin');
+    const newSearch = params.toString();
+    history.replaceState(null, '', location.pathname + (newSearch ? '?' + newSearch : ''));
+
+    if (apiKey) showToast('API key saved!');
+  }
+
   // ── Init ──────────────────────────────────────────────────────
+  handleUrlParams();
   checkSetup();
 
 })();
